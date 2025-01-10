@@ -1,0 +1,18 @@
+FROM node:20 AS build
+WORKDIR /app
+COPY package.json yarn.lock .yarnrc.yml ./
+ENV COREPACK_HOME=/corepack
+RUN corepack enable && \
+    yarn set version berry && \
+    yarn
+
+FROM node:20-slim
+WORKDIR /app
+COPY --from=build /app /app
+EXPOSE 8080
+ENV COREPACK_HOME=/corepack
+RUN corepack enable && \
+    yarn set version berry && \
+    yarn
+VOLUME ["/app"]
+CMD ["yarn", "dev"]

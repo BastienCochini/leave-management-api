@@ -1,0 +1,34 @@
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    env_file: .env
+    container_name: leave-management-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - yarn-data:/leave-management-api/.yarn
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: leave-management-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  yarn-data:
+    name: leave-management-api-yarn-data
+  db-data:
+
+    name: leave-management-db-data
